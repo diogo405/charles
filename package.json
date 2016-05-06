@@ -1,0 +1,19 @@
+{
+  "name": "charles",
+  "version": "1.0.0",
+  "description": "Charles dancing.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Diogo Goncalves goncalvesdiogo99@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-haml": "^0.1.6",
+    "gulp-jshint": "^2.0.0",
+    "gulp-sass": "^2.3.1",
+    "jshint": "^2.9.2"
+  }
+}
