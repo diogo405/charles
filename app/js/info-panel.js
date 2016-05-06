@@ -9,6 +9,7 @@ function InfoPanel() {
 	this.lifeBar = $('.life-bar');
 	this.score = $('.score');
 	this.scorePoints = 0;
+	this.level = $('span.level');
 	
 	this.points = { 
 		CHAR: 18, 
@@ -22,6 +23,8 @@ InfoPanel.prototype.init = function() {
 
 	initLife();
 	self.score.show();
+	self.level.html('L1');
+	self.level.show();
 
 	function initLife() {
 		for (var i = 0; i < self.NUMBER_OF_LIFES; i++) {
@@ -34,6 +37,10 @@ InfoPanel.prototype.init = function() {
 
 InfoPanel.prototype.updateLife = function() {
 	self.lifeBar.find('.life:first').remove();
+};
+
+InfoPanel.prototype.updateLevel = function(level) {
+	self.level.html('L'+level);
 };
 
 InfoPanel.prototype.isAlive = function() {

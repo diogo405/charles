@@ -46,24 +46,93 @@ Char.prototype.show = function() {
 module.exports = new Char();
 
 },{}],3:[function(require,module,exports){
+var InfoPanel = require('./info-panel');
+
+var self;
+
+function Charles() {
+	
+	self = this;
+
+	this.MESSAGE_ARRAY = ['Awesome!', 'Cooool', 'Very good :>', 'Let\'s dance!', 'Nice', 'Wow', ':)))', 'Follow me!', 'Like Jackson!'];
+	this.NUMBER_OF_DANCES = 4;
+	this.CORRECT_IN_ROW_FIRST = 3;
+	this.CORRECT_IN_ROW_SECOND = 8;
+
+	this.toy = $('#charles');
+	this.message = $('.message');
+}
+
+Charles.prototype.dance = function() {
+
+	setTimeout(function(){ 
+		self.move();
+		setTimeout(function(){
+			self.move();
+			setTimeout(function(){
+				self.move();
+				setTimeout(function(){
+					self.move();
+					setTimeout(function(){
+						self.move();
+					}, 250);
+				}, 250);
+			}, 250);
+		},250);
+	}, 250);
+
+};
+
+Charles.prototype.move = function() {
+	var currentDanceNumber = getCurrentDanceNumber();
+	var nextDanceNumber = pickDanceNumber();
+
+	while (currentDanceNumber == nextDanceNumber){
+		nextDanceNumber = pickDanceNumber();
+	}
+
+	self.toy.removeClass().addClass('dance'+nextDanceNumber);
+
+	function getCurrentDanceNumber() {
+		var className = self.toy.attr('class');
+		if (!className) return 0;
+		var re = /dance(\d*)/;
+		return re.exec(className)[1];
+	}
+
+	function pickDanceNumber() {
+		return Math.floor(Math.random() * self.NUMBER_OF_DANCES + 1);
+	}
+};
+
+Charles.prototype.claim = function(correctInRow, level) {
+	if (correctInRow == self.CORRECT_IN_ROW_FIRST || self.correctInRow == self.CORRECT_IN_ROW_SECOND) {
+		var points = correctInRow == self.CORRECT_IN_ROW_FIRST ? InfoPanel.points.IN_A_ROW_1 : InfoPanel.points.IN_A_ROW_2;
+		InfoPanel.updatePoints(level, points);
+		var text = getText();
+		self.message.html(text);
+		self.message.addClass('say');
+		self.message.on('animationend webkitAnimationEnd', function(e){
+			$(this).removeClass('say');
+		});
+	}
+
+	function getText() {
+		return self.MESSAGE_ARRAY[Math.floor(Math.random() * self.MESSAGE_ARRAY.length)];	
+	}
+};
+
+module.exports = new Charles();
+},{"./info-panel":5}],4:[function(require,module,exports){
 $(function(){
 
 	var Audio = require('./audio.js');
 	var InfoPanel = require('./info-panel.js');
 	var Char = require('./char.js');
+	var Charles = require('./charles.js');
 	 
-	var NUMBER_OF_DANCES = 4; 
-	//var CHAR_ARRAY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-	//var CHAR_ARRAY_COMPLEMENT = ['!', '@', '#', '$', '%', '&', '*', '(', ')'];
-	var CORRECT_IN_ROW_FIRST = 3;
-	var CORRECT_IN_ROW_SECOND = 8;
-	var MESSAGE_ARRAY = ['Awesome!', 'Cooool', 'Very good :>', 'Let\'s dance!', 'Nice'];
 	var ANIMATION_DURATION_ADJUST = 0.025;
-	var $charles = $('#charles');
-	//var $chars = $('.chars');
 	var $body = $('body');
-	var $message = $('.message');
-	var $level = $('span.level');
 	var $startMessage = $('.start-message');
 	var $levelUp = $('.level-up');
 	var correct = 0;
@@ -78,7 +147,7 @@ $(function(){
 
 		Audio.levelUp.play();
 		level++;
-		$level.html('L'+level);
+		InfoPanel.updateLevel(level);
 		$levelUp.html('LEVEL '+level+'!');
 		$levelUp.addClass('level');
 		$levelUp.on('animationend webkitAnimationEnd', function(e){
@@ -86,30 +155,13 @@ $(function(){
 		});
 		InfoPanel.updatePoints(level, InfoPanel.points.LEVEL);
 		var $charsMove = $('.chars.move');
-		console.log($charsMove);
 		var animationDuration = parseFloat($charsMove.css('animation-duration'));
-		console.log('animationDuration', animationDuration);
 		animationDuration -= ANIMATION_DURATION_ADJUST;
 		animationDuration = animationDuration < 0.3 ? 0.3 : animationDuration; 
 		if (animationDuration == 0.3) {
 			CHAR_ARRAY.concat(CHAR_ARRAY_COMPLEMENT);
 		}
-		console.log('animationDuration after', animationDuration);
 		$charsMove.css({'animation-duration': animationDuration + 's'});
-	};
-
-	var showMessage = function() {
-		if (correctInRow == CORRECT_IN_ROW_FIRST || correctInRow == CORRECT_IN_ROW_SECOND) {
-			console.log('correctInRow', correctInRow);
-			var points = correctInRow == CORRECT_IN_ROW_FIRST ? InfoPanel.points.IN_A_ROW_1 : InfoPanel.points.IN_A_ROW_2;
-			InfoPanel.updatePoints(level, points);
-			var text = getFromArray(MESSAGE_ARRAY);
-			$message.html(text);
-			$message.addClass('say');
-			$message.on('animationend webkitAnimationEnd', function(e){
-				$(this).removeClass('say');
-			});
-		}
 	};
 
 	var miss = function() {
@@ -126,67 +178,6 @@ $(function(){
 		setTimeout(function(){ $body.removeClass('miss'); }, 250);
 	};
 
-	/*
-	var showChar = function() {
-		newChar = getFromArray(CHAR_ARRAY);
-		$chars.html(newChar);
-		$chars.addClass('move');
-		$chars.on('animationend webkitAnimationEnd', function(e){
-			$(this).removeClass('move');			
-			if (!keypressed) {
-				//addPoints(-3);
-				//miss();
-				//$body.addClass('alert');
-				//setTimeout(function(){ $body.removeClass('alert'); }, 250);
-			}			
-		}); 
-	};
-	*/
-
-	var getFromArray = function(array) {
-		return array[Math.floor(Math.random() * array.length)];
-	};
-
-	var dance = function() {
-		setTimeout(function(){ 
-			move();
-			setTimeout(function(){
-				move();
-				setTimeout(function(){
-					move();
-					setTimeout(function(){
-						move();
-						setTimeout(function(){
-							move();
-						}, 250);
-					}, 250);
-				}, 250);
-			},250);
-		}, 250);
-	};
-
-	var move = function() {
-		var currentDanceNumber = getCurrentDanceNumber();
-		var nextDanceNumber = pickDanceNumber();
-
-		while (currentDanceNumber == nextDanceNumber){
-			nextDanceNumber = pickDanceNumber();
-		}
-
-		$charles.removeClass().addClass('dance'+nextDanceNumber);
-	};
-
-	var getCurrentDanceNumber = function() {
-		var className = $charles.attr('class');
-		if (!className) return 0;
-		var re = /dance(\d*)/;
-		return re.exec(className)[1];
-	};
-
-	var pickDanceNumber = function() {
-		return Math.floor(Math.random() * NUMBER_OF_DANCES + 1);
-	};
-
 	var gameOver = function() {
 		started = false;
 		$body.addClass('game-over');
@@ -194,17 +185,12 @@ $(function(){
 		$body.off('keypress');
 
 		$('.game-over .blur, .game-over .game-over-message').on('click', function(){		
-			//started = false;
-			//$startMessage.show();
-			//start();
+			// TODO
 		});
 	}; 
  
 	var start = function() {
-		$level.show();
-		$level.html('L1');
 		Audio.background.play();
-		$body.removeClass('game-over');
 		InfoPanel.init();
  
 		setInterval(function(){ newChar = Char.show(); }, 1000);
@@ -215,11 +201,11 @@ $(function(){
 			if (keypressed && newChar && keypressed.toUpperCase() == newChar.toUpperCase()) {
 				Audio.success.play();
 				correctInRow++;
-				showMessage();
+				Charles.claim(correctInRow, level);
 				correct++;
 				InfoPanel.updatePoints(level);
 				changeLevel();
-				dance();
+				Charles.dance();
 				keypressed = undefined;
 			} else {	
 				miss();
@@ -235,7 +221,7 @@ $(function(){
 	});
 
 });
-},{"./audio.js":1,"./char.js":2,"./info-panel.js":4}],4:[function(require,module,exports){
+},{"./audio.js":1,"./char.js":2,"./charles.js":3,"./info-panel.js":5}],5:[function(require,module,exports){
 var self;
 
 function InfoPanel() {
@@ -247,6 +233,7 @@ function InfoPanel() {
 	this.lifeBar = $('.life-bar');
 	this.score = $('.score');
 	this.scorePoints = 0;
+	this.level = $('span.level');
 	
 	this.points = { 
 		CHAR: 18, 
@@ -260,6 +247,8 @@ InfoPanel.prototype.init = function() {
 
 	initLife();
 	self.score.show();
+	self.level.html('L1');
+	self.level.show();
 
 	function initLife() {
 		for (var i = 0; i < self.NUMBER_OF_LIFES; i++) {
@@ -272,6 +261,10 @@ InfoPanel.prototype.init = function() {
 
 InfoPanel.prototype.updateLife = function() {
 	self.lifeBar.find('.life:first').remove();
+};
+
+InfoPanel.prototype.updateLevel = function(level) {
+	self.level.html('L'+level);
 };
 
 InfoPanel.prototype.isAlive = function() {
@@ -288,4 +281,4 @@ InfoPanel.prototype.updatePoints = function(level, points) {
 };
 
 module.exports = new InfoPanel();
-},{}]},{},[3])
+},{}]},{},[4])
