@@ -6,18 +6,80 @@ $(function(){
 	var Charles = require('./charles.js');
 	var LevelController = require('./level-controller.js');
 	 
-	var $body = $('body');
-	var $startMessage = $('.start-message');
-	var correct = 0;
-	var correctInRow = 0;
-	var started = false;
-	var newChar;
-	var keypressed;	
+	var self;
 
-	var changeLevel = function() {
-		if (correct === 0 || correct % 7 !== 0) return;
+	function Game() {
+		
+		self = this;
 
-		// else
+		this.correct = 0;
+		this.correctInRow = 0;
+		this.started = false;
+		this.newChar = null;
+		this.keypressed = null;
+		
+		this.body = $('body');
+		this.startMessage = $('.start-message');
+
+		self.body.on('keypress', function(e){
+
+			if (!self.started) {
+				self.startMessage.hide();
+				self.start();			
+				self.started = true;
+				return;
+			}
+
+			var charCode = e.which || e.keyCode;
+			self.keypressed = String.fromCharCode(charCode);
+			if (self.keypressed && self.newChar && self.keypressed.toUpperCase() == self.newChar.toUpperCase()) {
+				self.success();
+			} else {	
+				self.miss();
+			}			
+		});
+	}
+
+	// -- Starts here ---
+	new Game();
+
+	Game.prototype.start = function() {
+		Audio.background.play();
+		InfoPanel.init();
+		setInterval(function(){ self.newChar = CharEngine.show(); }, 1000);
+	};
+
+	Game.prototype.success = function() {
+		Audio.success.play();
+		self.correctInRow++;
+		Charles.claim(self.correctInRow, LevelController.level);
+		self.correct++;
+		InfoPanel.updatePoints(LevelController.level);
+		self.changeLevel();
+		Charles.dance();
+		self.keypressed = null; // TODO: review
+	};
+
+	Game.prototype.miss = function() {
+		self.correctInRow = 0;			
+		Audio.error.play();
+
+		if (InfoPanel.isAlive()) {
+			InfoPanel.updateLife();
+		} else {
+			self.gameOver(); 
+		}
+
+		self.body.addClass('miss');
+		setTimeout(function(){ self.body.removeClass('miss'); }, 250);
+	};
+
+	Game.prototype.changeLevel = function() {
+
+		if (self.correct === 0 || self.correct % 7 !== 0) {
+			return;
+		}
+
 		Audio.levelUp.play();
 		LevelController.level++;
 		InfoPanel.updateLevel(LevelController.level);
@@ -26,60 +88,15 @@ $(function(){
 		CharEngine.updateSpeed();
 	};
 
-	var miss = function() {
-		correctInRow = 0;			
-		Audio.error.play();
-
-		if (InfoPanel.isAlive()) {
-			InfoPanel.updateLife();
-		} else {
-			gameOver(); 
-		}
-
-		$body.addClass('miss');
-		setTimeout(function(){ $body.removeClass('miss'); }, 250);
-	};
-
-	var gameOver = function() {
-		started = false;
-		$body.addClass('game-over');
+	Game.prototype.gameOver = function() {
+		self.started = false;
+		self.body.addClass('game-over');
 		Audio.background.currentTime = 0;
-		$body.off('keypress');
+		self.body.off('keypress');
 
-		$('.game-over .blur, .game-over .game-over-message').on('click', function(){		
+		$('.game-over .blur, .game-over .game-over-message').on('click', function() {
 			// TODO
 		});
-	}; 
- 
-	var start = function() {
-		Audio.background.play();
-		InfoPanel.init();
- 
-		setInterval(function(){ newChar = CharEngine.show(); }, 1000);
- 
-		$body.on('keypress', function(e){
-			var charCode = e.which || e.keyCode;
-			keypressed = String.fromCharCode(charCode);
-			if (keypressed && newChar && keypressed.toUpperCase() == newChar.toUpperCase()) {
-				Audio.success.play();
-				correctInRow++;
-				Charles.claim(correctInRow, LevelController.level);
-				correct++;
-				InfoPanel.updatePoints(LevelController.level);
-				changeLevel();
-				Charles.dance();
-				keypressed = undefined;
-			} else {	
-				miss();
-			}			
-		}); 
 	};
- 
-	$body.on('keypress', function(){
-		if (started) return;
-		$startMessage.hide();
-		start();			
-		started = true;
-	});
 
 });
