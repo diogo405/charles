@@ -11,16 +11,18 @@ module.exports = Audio;
 },{}],2:[function(require,module,exports){
 var self;
 
-function Char() {
+function CharEngine() {
 
 	self = this;
 
 	this.CHAR_ARRAY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 	this.CHAR_ARRAY_COMPLEMENT = ['!', '@', '#', '$', '%', '&', '*', '(', ')'];
+	this.ANIMATION_DURATION_ADJUST = 0.025;
+
 	this.chars = $('.chars');
 }
 
-Char.prototype.show = function() {
+CharEngine.prototype.show = function() {
 	
 	var newChar = get();
 	
@@ -43,7 +45,19 @@ Char.prototype.show = function() {
 	}
 };
 
-module.exports = new Char();
+
+CharEngine.prototype.updateSpeed = function() {
+	var $charsMove = $('.chars.move');
+	var animationDuration = parseFloat($charsMove.css('animation-duration'));
+	animationDuration -= self.ANIMATION_DURATION_ADJUST;
+	animationDuration = animationDuration < 0.3 ? 0.3 : animationDuration; 
+	if (animationDuration == 0.3) {
+		self.CHAR_ARRAY.concat(self.CHAR_ARRAY_COMPLEMENT);
+	}
+	$charsMove.css({'animation-duration': animationDuration + 's'});
+};
+
+module.exports = new CharEngine();
 
 },{}],3:[function(require,module,exports){
 var InfoPanel = require('./info-panel');
@@ -128,40 +142,28 @@ $(function(){
 
 	var Audio = require('./audio.js');
 	var InfoPanel = require('./info-panel.js');
-	var Char = require('./char.js');
+	var CharEngine = require('./char-engine.js');
 	var Charles = require('./charles.js');
+	var LevelController = require('./level-controller.js');
 	 
-	var ANIMATION_DURATION_ADJUST = 0.025;
 	var $body = $('body');
 	var $startMessage = $('.start-message');
-	var $levelUp = $('.level-up');
 	var correct = 0;
 	var correctInRow = 0;
 	var started = false;
-	var level = 1;
 	var newChar;
 	var keypressed;	
 
 	var changeLevel = function() {
 		if (correct === 0 || correct % 7 !== 0) return;
 
+		// else
 		Audio.levelUp.play();
-		level++;
-		InfoPanel.updateLevel(level);
-		$levelUp.html('LEVEL '+level+'!');
-		$levelUp.addClass('level');
-		$levelUp.on('animationend webkitAnimationEnd', function(e){
-			$(this).removeClass('level');
-		});
-		InfoPanel.updatePoints(level, InfoPanel.points.LEVEL);
-		var $charsMove = $('.chars.move');
-		var animationDuration = parseFloat($charsMove.css('animation-duration'));
-		animationDuration -= ANIMATION_DURATION_ADJUST;
-		animationDuration = animationDuration < 0.3 ? 0.3 : animationDuration; 
-		if (animationDuration == 0.3) {
-			CHAR_ARRAY.concat(CHAR_ARRAY_COMPLEMENT);
-		}
-		$charsMove.css({'animation-duration': animationDuration + 's'});
+		LevelController.level++;
+		InfoPanel.updateLevel(LevelController.level);
+		LevelController.showLevelUp();
+		InfoPanel.updatePoints(LevelController.level, InfoPanel.points.LEVEL);
+		CharEngine.updateSpeed();
 	};
 
 	var miss = function() {
@@ -193,7 +195,7 @@ $(function(){
 		Audio.background.play();
 		InfoPanel.init();
  
-		setInterval(function(){ newChar = Char.show(); }, 1000);
+		setInterval(function(){ newChar = CharEngine.show(); }, 1000);
  
 		$body.on('keypress', function(e){
 			var charCode = e.which || e.keyCode;
@@ -201,9 +203,9 @@ $(function(){
 			if (keypressed && newChar && keypressed.toUpperCase() == newChar.toUpperCase()) {
 				Audio.success.play();
 				correctInRow++;
-				Charles.claim(correctInRow, level);
+				Charles.claim(correctInRow, LevelController.level);
 				correct++;
-				InfoPanel.updatePoints(level);
+				InfoPanel.updatePoints(LevelController.level);
 				changeLevel();
 				Charles.dance();
 				keypressed = undefined;
@@ -221,7 +223,7 @@ $(function(){
 	});
 
 });
-},{"./audio.js":1,"./char.js":2,"./charles.js":3,"./info-panel.js":5}],5:[function(require,module,exports){
+},{"./audio.js":1,"./char-engine.js":2,"./charles.js":3,"./info-panel.js":5,"./level-controller.js":6}],5:[function(require,module,exports){
 var self;
 
 function InfoPanel() {
@@ -281,4 +283,24 @@ InfoPanel.prototype.updatePoints = function(level, points) {
 };
 
 module.exports = new InfoPanel();
+},{}],6:[function(require,module,exports){
+var self;
+
+function LevelController() {
+
+	self = this;
+	this.level = 1;
+
+	this.levelUp = $('.level-up');
+}
+
+LevelController.prototype.showLevelUp = function() {
+	self.levelUp.html('LEVEL '+self.level+'!');
+	self.levelUp.addClass('level');
+	self.levelUp.on('animationend webkitAnimationEnd', function(e){
+		$(this).removeClass('level');
+	});
+};
+
+module.exports = new LevelController();
 },{}]},{},[4])

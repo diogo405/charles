@@ -2,40 +2,28 @@ $(function(){
 
 	var Audio = require('./audio.js');
 	var InfoPanel = require('./info-panel.js');
-	var Char = require('./char.js');
+	var CharEngine = require('./char-engine.js');
 	var Charles = require('./charles.js');
+	var LevelController = require('./level-controller.js');
 	 
-	var ANIMATION_DURATION_ADJUST = 0.025;
 	var $body = $('body');
 	var $startMessage = $('.start-message');
-	var $levelUp = $('.level-up');
 	var correct = 0;
 	var correctInRow = 0;
 	var started = false;
-	var level = 1;
 	var newChar;
 	var keypressed;	
 
 	var changeLevel = function() {
 		if (correct === 0 || correct % 7 !== 0) return;
 
+		// else
 		Audio.levelUp.play();
-		level++;
-		InfoPanel.updateLevel(level);
-		$levelUp.html('LEVEL '+level+'!');
-		$levelUp.addClass('level');
-		$levelUp.on('animationend webkitAnimationEnd', function(e){
-			$(this).removeClass('level');
-		});
-		InfoPanel.updatePoints(level, InfoPanel.points.LEVEL);
-		var $charsMove = $('.chars.move');
-		var animationDuration = parseFloat($charsMove.css('animation-duration'));
-		animationDuration -= ANIMATION_DURATION_ADJUST;
-		animationDuration = animationDuration < 0.3 ? 0.3 : animationDuration; 
-		if (animationDuration == 0.3) {
-			CHAR_ARRAY.concat(CHAR_ARRAY_COMPLEMENT);
-		}
-		$charsMove.css({'animation-duration': animationDuration + 's'});
+		LevelController.level++;
+		InfoPanel.updateLevel(LevelController.level);
+		LevelController.showLevelUp();
+		InfoPanel.updatePoints(LevelController.level, InfoPanel.points.LEVEL);
+		CharEngine.updateSpeed();
 	};
 
 	var miss = function() {
@@ -67,7 +55,7 @@ $(function(){
 		Audio.background.play();
 		InfoPanel.init();
  
-		setInterval(function(){ newChar = Char.show(); }, 1000);
+		setInterval(function(){ newChar = CharEngine.show(); }, 1000);
  
 		$body.on('keypress', function(e){
 			var charCode = e.which || e.keyCode;
@@ -75,9 +63,9 @@ $(function(){
 			if (keypressed && newChar && keypressed.toUpperCase() == newChar.toUpperCase()) {
 				Audio.success.play();
 				correctInRow++;
-				Charles.claim(correctInRow, level);
+				Charles.claim(correctInRow, LevelController.level);
 				correct++;
-				InfoPanel.updatePoints(level);
+				InfoPanel.updatePoints(LevelController.level);
 				changeLevel();
 				Charles.dance();
 				keypressed = undefined;
