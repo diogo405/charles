@@ -66,6 +66,9 @@ $(function(){
 
 		if (InfoPanel.isAlive()) {
 			InfoPanel.updateLife();
+			if (InfoPanel.getLife() === 0) {
+				Charles.removeShirt();				
+			}
 		} else {
 			self.gameOver(); 
 		}

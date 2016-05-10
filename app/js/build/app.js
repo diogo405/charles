@@ -75,6 +75,7 @@ function Charles() {
 
 	this.toy = $('#charles');
 	this.message = $('.message');
+	this.shirt = $('.body');
 }
 
 Charles.prototype.dance = function() {
@@ -134,6 +135,10 @@ Charles.prototype.claim = function(correctInRow, level) {
 	function getText() {
 		return self.MESSAGE_ARRAY[Math.floor(Math.random() * self.MESSAGE_ARRAY.length)];	
 	}
+};
+
+Charles.prototype.removeShirt = function() {
+	self.shirt.addClass('naked');
 };
 
 module.exports = new Charles();
@@ -206,6 +211,9 @@ $(function(){
 
 		if (InfoPanel.isAlive()) {
 			InfoPanel.updateLife();
+			if (InfoPanel.getLife() === 0) {
+				Charles.removeShirt();				
+			}
 		} else {
 			self.gameOver(); 
 		}
@@ -288,6 +296,11 @@ InfoPanel.prototype.updateLevel = function(level) {
 
 InfoPanel.prototype.isAlive = function() {
 	return self.lifeBar.find('.life:first').length > 0;
+};
+
+
+InfoPanel.prototype.getLife = function() {
+	return self.lifeBar.find('.life:first').length;
 };
 
 InfoPanel.prototype.updatePoints = function(level, points) {

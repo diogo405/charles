@@ -47,6 +47,11 @@ InfoPanel.prototype.isAlive = function() {
 	return self.lifeBar.find('.life:first').length > 0;
 };
 
+
+InfoPanel.prototype.getLife = function() {
+	return self.lifeBar.find('.life:first').length;
+};
+
 InfoPanel.prototype.updatePoints = function(level, points) {
 
 	self.scorePoints = points ? 

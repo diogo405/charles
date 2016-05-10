@@ -192,6 +192,8 @@ span.level {
     height: 85px;
     background-color: #00D900;
     float: left; }
+  #charles .body.naked {
+    background-color: #FFDC73; }
   #charles .left-upperarm {
     width: 50px;
     height: 15px;

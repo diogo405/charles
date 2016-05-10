@@ -13,6 +13,7 @@ function Charles() {
 
 	this.toy = $('#charles');
 	this.message = $('.message');
+	this.shirt = $('.body');
 }
 
 Charles.prototype.dance = function() {
@@ -72,6 +73,10 @@ Charles.prototype.claim = function(correctInRow, level) {
 	function getText() {
 		return self.MESSAGE_ARRAY[Math.floor(Math.random() * self.MESSAGE_ARRAY.length)];	
 	}
+};
+
+Charles.prototype.removeShirt = function() {
+	self.shirt.addClass('naked');
 };
 
 module.exports = new Charles();

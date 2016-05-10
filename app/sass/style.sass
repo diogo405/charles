@@ -12,8 +12,6 @@ body
 	background-color: #BFEFFF
 	&.miss
 		animation: missed .25s linear
-	//&.alert
-	//	animation: alert .25s linear
 
 .level-up
 	display: none
@@ -76,6 +74,15 @@ span.level
 	z-index: 9
 	display: none
 
+//.game-name
+//	color: green
+//	position: absolute
+//	top: 20%
+//	left: 50%
+//	font-size: 4.5em
+//	font-weight: bolder
+//	transform: translate(-50%, -50%)
+
 .start-message
 	color: black
 	position: absolute
@@ -132,6 +139,8 @@ span.level
 	.body
 		+build($body-width, $body-height, $shirt-color)
 		float: left			
+	.body.naked
+		background-color: $skin-color
 	.left-upperarm
 		+build($upperarm-width, $upperarm-height, $skin-color)
 		float: left 
