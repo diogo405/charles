@@ -37,6 +37,12 @@
   left: 50%;
   transform: translate(-50%, -50%); }
 
+.charles-michael .charlesHead-hair {
+  background-color: yellow; }
+
+.charles-michael .charlesHead-face, .charles-michael .charlesRightForearm, .charles-michael .charlesRightUpperarm, .charles-michael .charlesLeftForearm, .charles-michael .charlesLeftUpperarm, .charles-michael .charlesRightLeg, .charles-michael .charlesRightFoot, .charles-michael .charlesLeftLeg, .charles-michael .charlesLeftFoot {
+  background-color: black; }
+
 .charlesMessage {
   position: relative;
   top: -40px;

@@ -10,6 +10,8 @@ function Charles() {
 	this.NUMBER_OF_DANCES = 4;
 	this.CORRECT_IN_ROW_FIRST = 3;
 	this.CORRECT_IN_ROW_SECOND = 8;
+	this.HAIR_HEIGHT_ADJUSTMENT = 3;
+	this.TURN_BLACK_HAIR_HEIGHT = 60;
 
 	this.toy = $('.charles');
 	this.message = $('.charlesMessage');
@@ -44,7 +46,9 @@ Charles.prototype.move = function() {
 		nextDanceNumber = pickDanceNumber();
 	}  
  
-	self.toy.attr('class', 'charles charles-dance'+nextDanceNumber);
+ 	var currentClasses = self.toy.attr('class');
+ 	currentClasses = currentClasses.replace(/charles-dance(\d*)/g, '');
+ 	self.toy.attr('class', currentClasses + ' charles-dance'+nextDanceNumber);
 
 	function getCurrentDanceNumber() {
 		var className = self.toy.attr('class');
@@ -59,7 +63,8 @@ Charles.prototype.move = function() {
 };
 
 Charles.prototype.claim = function(correctInRow, level) {
-	if (correctInRow == self.CORRECT_IN_ROW_FIRST || self.correctInRow == self.CORRECT_IN_ROW_SECOND) {
+	
+	if ((correctInRow !== 0) && ((correctInRow % self.CORRECT_IN_ROW_FIRST === 0) || (self.correctInRow % self.CORRECT_IN_ROW_SECOND === 0))) {
 		var points = correctInRow == self.CORRECT_IN_ROW_FIRST ? InfoPanel.points.IN_A_ROW_1 : InfoPanel.points.IN_A_ROW_2;
 		InfoPanel.updatePoints(level, points);
 		var text = getText();
@@ -67,7 +72,22 @@ Charles.prototype.claim = function(correctInRow, level) {
 		self.message.addClass('charlesMessage-isSaying');
 		self.message.on('animationend webkitAnimationEnd', function(e){
 			$(this).removeClass('charlesMessage-isSaying');
-		});
+		});		
+		var currentHairHeight = growHair();
+		if (currentHairHeight == self.TURN_BLACK_HAIR_HEIGHT) {
+			turnBlack();
+		}
+	}
+
+	function turnBlack() {
+		self.toy.addClass('charles-michael');
+	}
+
+	function growHair() {
+		var charlesHair = self.toy.find('.charlesHead-hair');
+		var currentHairHeight = parseInt(charlesHair.css('height').replace('px', ''));
+		charlesHair.css('height', (currentHairHeight + self.HAIR_HEIGHT_ADJUSTMENT) + 'px');
+		return currentHairHeight + self.HAIR_HEIGHT_ADJUSTMENT;
 	}
 
 	function getText() {
