@@ -8,7 +8,7 @@ function CharEngine() {
 	this.CHAR_ARRAY_COMPLEMENT = ['!', '@', '#', '$', '%', '&', '*', '(', ')'];
 	this.ANIMATION_DURATION_ADJUST = 0.025;
 
-	this.chars = $('.chars');
+	this.chars = $('.charEngine');
 }
 
 CharEngine.prototype.show = function() {
@@ -16,9 +16,9 @@ CharEngine.prototype.show = function() {
 	var newChar = get();
 	
 	self.chars.html(newChar);
-	self.chars.addClass('move');
+	self.chars.addClass('charEngine-isWorking');
 	self.chars.on('animationend webkitAnimationEnd', function(e){
-		$(this).removeClass('move');			
+		$(this).removeClass('charEngine-isWorking');			
 		
 		/*
 		if (!keypressed) {
@@ -36,14 +36,14 @@ CharEngine.prototype.show = function() {
 
 
 CharEngine.prototype.updateSpeed = function() {
-	var $charsMove = $('.chars.move');
-	var animationDuration = parseFloat($charsMove.css('animation-duration'));
+	var $charsMoving = $('.charEngine.charEngine-isWorking');
+	var animationDuration = parseFloat($charsMoving.css('animation-duration'));
 	animationDuration -= self.ANIMATION_DURATION_ADJUST;
 	animationDuration = animationDuration < 0.3 ? 0.3 : animationDuration; 
 	if (animationDuration == 0.3) {
 		self.CHAR_ARRAY.concat(self.CHAR_ARRAY_COMPLEMENT);
 	}
-	$charsMove.css({'animation-duration': animationDuration + 's'});
+	$charsMoving.css({'animation-duration': animationDuration + 's'});
 };
 
 module.exports = new CharEngine();

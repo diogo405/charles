@@ -1,36 +1,46 @@
 
 %head
+    
   %link{href: "css/style.css", rel: "stylesheet", type: "text/css"}
   %link{href: "https://fonts.googleapis.com/css?family=VT323", rel: "stylesheet", type: "text/css"}
   %script{src: "../bower_components/jquery/dist/jquery.min.js"}
  
-%body
-  .blur
-  .game-over-message GAME OVER
-  .level-up
-  .start-message PRESS ANY KEY TO START
-  .chars
-  %span.level L1
-  %span.score 0
-  .life-bar
-  #charles
-    .message
-    .head
-      .hair 
-      .face
-    .right-forearm
-    .right-upperarm
-    .body
-    .left-upperarm
-    .left-forearm
-    .clear
-    .short-right
-    .short-division
-    .short-left
-    .right-leg
-    .left-leg
-    .right-foot
-    .left-foot
+
+%body.gameBackground
+  
+  .infoPanel
+    .infoPanelLevel 
+      %span.infoPanelLevel-text 
+    .infoPanel-score 0
+    .infoPanel-life
+  
+  .gameOver 
+  .gameOver-message GAME OVER
+
+  .messagePanel
+    .messagePanel-levelUpMessage 
+    .messagePanel-startGameMessage PRESS ANY KEY TO START
+
+  .charEngine
+
+  .charles
+    .charlesMessage
+    .charlesHead
+      .charlesHead-hair
+      .charlesHead-face
+    .charlesRightForearm
+    .charlesRightUpperarm
+    .charlesBody
+    .charlesLeftUpperarm
+    .charlesLeftForearm
+    .charlesShort
+      .charlesShort-division
+    .charlesRightLeg
+    .charlesLeftLeg
+    .charlesRightFoot
+    .charlesLeftFoot
+
+
   %audio{id: "background", loop:, preload:} 
     %source{src: "audio/background.mp3"}
   %audio{id: "levelUp"}

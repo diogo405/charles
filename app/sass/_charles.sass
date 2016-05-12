@@ -1,0 +1,105 @@
+.charles
+	position: absolute
+	top: 50%
+	left: 50%
+	transform: translate(-50%, -50%)
+
+
+.charlesMessage
+	position: relative
+	top: -40px
+	font-size: 2em
+	opacity: 0
+.charlesMessage-isSaying
+	animation: say 1s ease
+
+
+.charlesHead
+	margin-left: (($upperarm-width + $forearm-width) * 2 + $body-width) / 2 - ($head-width / 2)
+.charlesHead-hair
+	width: $head-width
+	height: $hair-height
+	background-color: $hair-color
+.charlesHead-face
+	width: $head-width
+	height: $face-height
+	background-color: $skin-color
+
+
+.charlesRightForearm
+	float: left
+	width: $forearm-width
+	height: $forearm-height
+	background-color: $skin-color
+	margin-top: -($forearm-height - $upperarm-height)
+.charlesRightUpperarm
+	float: left
+	width: $upperarm-width
+	height: $upperarm-height
+	background-color: $skin-color
+
+
+.charlesBody
+	float: left		
+	width: $body-width
+	height: $body-height
+	background-color: $shirt-color
+.charlesBody-withoutShirt
+	background-color: $skin-color
+
+
+.charlesLeftUpperarm
+	float: left
+	width: $upperarm-width
+	height: $upperarm-height
+	background-color: $skin-color
+.charlesLeftForearm
+	float: left 
+	width: $forearm-width
+	height: $forearm-height
+	background-color: $skin-color
+	 
+
+.charlesShort
+	clear: both 
+	width: $short-width
+	height: $short-height
+	background-color: $short-color
+	margin-left: $forearm-width + $upperarm-width
+.charlesShort-division
+	position: relative
+	top: 0
+	left: 50%
+	transform: translate(-50%, 0)
+	width: $short-division-width
+	height: $short-height
+	background-color: $short-division-color
+
+
+.charlesRightLeg
+	float: left
+	width: $leg-width
+	height: $leg-height
+	background-color: $skin-color
+	margin-left: $forearm-width + $upperarm-width + $leg-adjustment
+.charlesLeftLeg
+	float: left
+	width: $leg-width
+	height: $leg-height
+	background-color: $skin-color
+	margin-left: $body-width - ($leg-width * 2) - ($leg-adjustment * 2)
+
+
+.charlesRightFoot
+	clear: both
+	float: left
+	width: $foot-width
+	height: $foot-height
+	background-color: $skin-color
+	margin-left: $forearm-width + $upperarm-width + $leg-adjustment - $foot-width + $leg-width
+.charlesLeftFoot
+	float: left
+	width: $foot-width
+	height: $foot-height
+	background-color: $skin-color
+	margin-left: $leg-adjustment + $foot-width

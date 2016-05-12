@@ -11,9 +11,9 @@ function Charles() {
 	this.CORRECT_IN_ROW_FIRST = 3;
 	this.CORRECT_IN_ROW_SECOND = 8;
 
-	this.toy = $('#charles');
-	this.message = $('.message');
-	this.shirt = $('.body');
+	this.toy = $('.charles');
+	this.message = $('.charlesMessage');
+	this.shirt = $('.charlesBody');
 }
 
 Charles.prototype.dance = function() {
@@ -42,16 +42,16 @@ Charles.prototype.move = function() {
 
 	while (currentDanceNumber == nextDanceNumber){
 		nextDanceNumber = pickDanceNumber();
-	}
-
-	self.toy.removeClass().addClass('dance'+nextDanceNumber);
+	}  
+ 
+	self.toy.attr('class', 'charles charles-dance'+nextDanceNumber);
 
 	function getCurrentDanceNumber() {
 		var className = self.toy.attr('class');
-		if (!className) return 0;
-		var re = /dance(\d*)/;
+		if (className.indexOf('dance') < 0) return 0;
+		var re = /charles-dance(\d*)/;
 		return re.exec(className)[1];
-	}
+	} 
 
 	function pickDanceNumber() {
 		return Math.floor(Math.random() * self.NUMBER_OF_DANCES + 1);
@@ -64,9 +64,9 @@ Charles.prototype.claim = function(correctInRow, level) {
 		InfoPanel.updatePoints(level, points);
 		var text = getText();
 		self.message.html(text);
-		self.message.addClass('say');
+		self.message.addClass('charlesMessage-isSaying');
 		self.message.on('animationend webkitAnimationEnd', function(e){
-			$(this).removeClass('say');
+			$(this).removeClass('charlesMessage-isSaying');
 		});
 	}
 
@@ -76,7 +76,7 @@ Charles.prototype.claim = function(correctInRow, level) {
 };
 
 Charles.prototype.removeShirt = function() {
-	self.shirt.addClass('naked');
+	self.shirt.addClass('charlesBody-withoutShirt');
 };
 
 module.exports = new Charles();

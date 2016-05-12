@@ -19,7 +19,7 @@ function CharEngine() {
 	this.CHAR_ARRAY_COMPLEMENT = ['!', '@', '#', '$', '%', '&', '*', '(', ')'];
 	this.ANIMATION_DURATION_ADJUST = 0.025;
 
-	this.chars = $('.chars');
+	this.chars = $('.charEngine');
 }
 
 CharEngine.prototype.show = function() {
@@ -27,9 +27,9 @@ CharEngine.prototype.show = function() {
 	var newChar = get();
 	
 	self.chars.html(newChar);
-	self.chars.addClass('move');
+	self.chars.addClass('charEngine-isWorking');
 	self.chars.on('animationend webkitAnimationEnd', function(e){
-		$(this).removeClass('move');			
+		$(this).removeClass('charEngine-isWorking');			
 		
 		/*
 		if (!keypressed) {
@@ -47,14 +47,14 @@ CharEngine.prototype.show = function() {
 
 
 CharEngine.prototype.updateSpeed = function() {
-	var $charsMove = $('.chars.move');
-	var animationDuration = parseFloat($charsMove.css('animation-duration'));
+	var $charsMoving = $('.charEngine.charEngine-isWorking');
+	var animationDuration = parseFloat($charsMoving.css('animation-duration'));
 	animationDuration -= self.ANIMATION_DURATION_ADJUST;
 	animationDuration = animationDuration < 0.3 ? 0.3 : animationDuration; 
 	if (animationDuration == 0.3) {
 		self.CHAR_ARRAY.concat(self.CHAR_ARRAY_COMPLEMENT);
 	}
-	$charsMove.css({'animation-duration': animationDuration + 's'});
+	$charsMoving.css({'animation-duration': animationDuration + 's'});
 };
 
 module.exports = new CharEngine();
@@ -73,9 +73,9 @@ function Charles() {
 	this.CORRECT_IN_ROW_FIRST = 3;
 	this.CORRECT_IN_ROW_SECOND = 8;
 
-	this.toy = $('#charles');
-	this.message = $('.message');
-	this.shirt = $('.body');
+	this.toy = $('.charles');
+	this.message = $('.charlesMessage');
+	this.shirt = $('.charlesBody');
 }
 
 Charles.prototype.dance = function() {
@@ -104,16 +104,16 @@ Charles.prototype.move = function() {
 
 	while (currentDanceNumber == nextDanceNumber){
 		nextDanceNumber = pickDanceNumber();
-	}
-
-	self.toy.removeClass().addClass('dance'+nextDanceNumber);
+	}  
+ 
+	self.toy.attr('class', 'charles charles-dance'+nextDanceNumber);
 
 	function getCurrentDanceNumber() {
 		var className = self.toy.attr('class');
-		if (!className) return 0;
-		var re = /dance(\d*)/;
+		if (className.indexOf('dance') < 0) return 0;
+		var re = /charles-dance(\d*)/;
 		return re.exec(className)[1];
-	}
+	} 
 
 	function pickDanceNumber() {
 		return Math.floor(Math.random() * self.NUMBER_OF_DANCES + 1);
@@ -126,9 +126,9 @@ Charles.prototype.claim = function(correctInRow, level) {
 		InfoPanel.updatePoints(level, points);
 		var text = getText();
 		self.message.html(text);
-		self.message.addClass('say');
+		self.message.addClass('charlesMessage-isSaying');
 		self.message.on('animationend webkitAnimationEnd', function(e){
-			$(this).removeClass('say');
+			$(this).removeClass('charlesMessage-isSaying');
 		});
 	}
 
@@ -138,7 +138,7 @@ Charles.prototype.claim = function(correctInRow, level) {
 };
 
 Charles.prototype.removeShirt = function() {
-	self.shirt.addClass('naked');
+	self.shirt.addClass('charlesBody-withoutShirt');
 };
 
 module.exports = new Charles();
@@ -163,10 +163,12 @@ $(function(){
 		this.newChar = null;
 		this.keypressed = null;
 		
-		this.body = $('body');
-		this.startMessage = $('.start-message');
+		this.game = $('.gameBackground');
+		this.gameOverBackground = $('.gameOver');
+		this.gameOverMessage = $('.gameOver-message');
+		this.startMessage = $('.messagePanel-startGameMessage');
 
-		self.body.on('keypress', function(e){
+		self.game.on('keypress', function(e){
 
 			if (!self.started) {
 				self.startMessage.hide();
@@ -218,8 +220,8 @@ $(function(){
 			self.gameOver(); 
 		}
 
-		self.body.addClass('miss');
-		setTimeout(function(){ self.body.removeClass('miss'); }, 250);
+		self.game.addClass('gameBackground-isMiss');
+		setTimeout(function(){ self.game.removeClass('gameBackground-isMiss'); }, 250);
 	};
 
 	Game.prototype.changeLevel = function() {
@@ -238,13 +240,16 @@ $(function(){
 
 	Game.prototype.gameOver = function() {
 		self.started = false;
-		self.body.addClass('game-over');
+		self.gameOverBackground.show();
+		self.gameOverMessage.show();
 		Audio.background.currentTime = 0;
-		self.body.off('keypress');
+		self.game.off('keypress');
 
+		/*
 		$('.game-over .blur, .game-over .game-over-message').on('click', function() {
 			// TODO
 		});
+		*/
 	};
 
 });
@@ -257,10 +262,11 @@ function InfoPanel() {
 
 	this.NUMBER_OF_LIFES = 4;
 	
-	this.lifeBar = $('.life-bar');
-	this.score = $('.score');
+	this.infoPanel = $('.infoPanel');
+	this.lifeBar = $('.infoPanel-life');
+	this.score = $('.infoPanel-score');
 	this.scorePoints = 0;
-	this.level = $('span.level');
+	this.level = $('.infoPanelLevel-text');
 	
 	this.points = { 
 		CHAR: 18, 
@@ -273,21 +279,20 @@ function InfoPanel() {
 InfoPanel.prototype.init = function() {
 
 	initLife();
-	self.score.show();
 	self.level.html('L1');
-	self.level.show();
+	self.infoPanel.show(); 
 
 	function initLife() {
 		for (var i = 0; i < self.NUMBER_OF_LIFES; i++) {
 			var div = document.createElement('div');
-			div.className = 'life';
+			div.className = 'infoPanel-lifeItem';
 			self.lifeBar.append(div);		
 		}
 	}
 };
 
 InfoPanel.prototype.updateLife = function() {
-	self.lifeBar.find('.life:first').remove();
+	self.lifeBar.find('.infoPanel-lifeItem:first').remove();
 };
 
 InfoPanel.prototype.updateLevel = function(level) {
@@ -295,12 +300,12 @@ InfoPanel.prototype.updateLevel = function(level) {
 };
 
 InfoPanel.prototype.isAlive = function() {
-	return self.lifeBar.find('.life:first').length > 0;
+	return self.lifeBar.find('.infoPanel-lifeItem:first').length > 0;
 };
 
 
 InfoPanel.prototype.getLife = function() {
-	return self.lifeBar.find('.life:first').length;
+	return self.lifeBar.find('.infoPanel-lifeItem:first').length;
 };
 
 InfoPanel.prototype.updatePoints = function(level, points) {
@@ -321,14 +326,14 @@ function LevelController() {
 	self = this;
 	this.level = 1;
 
-	this.levelUp = $('.level-up');
+	this.levelUp = $('.messagePanel-levelUpMessage');
 }
 
 LevelController.prototype.showLevelUp = function() {
 	self.levelUp.html('LEVEL '+self.level+'!');
-	self.levelUp.addClass('level');
+	self.levelUp.addClass('messagePanel-levelUpMessage-isLevelUp');
 	self.levelUp.on('animationend webkitAnimationEnd', function(e){
-		$(this).removeClass('level');
+		$(this).removeClass('messagePanel-levelUpMessage-isLevelUp');
 	});
 };
 

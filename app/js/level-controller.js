@@ -5,14 +5,14 @@ function LevelController() {
 	self = this;
 	this.level = 1;
 
-	this.levelUp = $('.level-up');
+	this.levelUp = $('.messagePanel-levelUpMessage');
 }
 
 LevelController.prototype.showLevelUp = function() {
 	self.levelUp.html('LEVEL '+self.level+'!');
-	self.levelUp.addClass('level');
+	self.levelUp.addClass('messagePanel-levelUpMessage-isLevelUp');
 	self.levelUp.on('animationend webkitAnimationEnd', function(e){
-		$(this).removeClass('level');
+		$(this).removeClass('messagePanel-levelUpMessage-isLevelUp');
 	});
 };
 

@@ -6,10 +6,11 @@ function InfoPanel() {
 
 	this.NUMBER_OF_LIFES = 4;
 	
-	this.lifeBar = $('.life-bar');
-	this.score = $('.score');
+	this.infoPanel = $('.infoPanel');
+	this.lifeBar = $('.infoPanel-life');
+	this.score = $('.infoPanel-score');
 	this.scorePoints = 0;
-	this.level = $('span.level');
+	this.level = $('.infoPanelLevel-text');
 	
 	this.points = { 
 		CHAR: 18, 
@@ -22,21 +23,20 @@ function InfoPanel() {
 InfoPanel.prototype.init = function() {
 
 	initLife();
-	self.score.show();
 	self.level.html('L1');
-	self.level.show();
+	self.infoPanel.show(); 
 
 	function initLife() {
 		for (var i = 0; i < self.NUMBER_OF_LIFES; i++) {
 			var div = document.createElement('div');
-			div.className = 'life';
+			div.className = 'infoPanel-lifeItem';
 			self.lifeBar.append(div);		
 		}
 	}
 };
 
 InfoPanel.prototype.updateLife = function() {
-	self.lifeBar.find('.life:first').remove();
+	self.lifeBar.find('.infoPanel-lifeItem:first').remove();
 };
 
 InfoPanel.prototype.updateLevel = function(level) {
@@ -44,12 +44,12 @@ InfoPanel.prototype.updateLevel = function(level) {
 };
 
 InfoPanel.prototype.isAlive = function() {
-	return self.lifeBar.find('.life:first').length > 0;
+	return self.lifeBar.find('.infoPanel-lifeItem:first').length > 0;
 };
 
 
 InfoPanel.prototype.getLife = function() {
-	return self.lifeBar.find('.life:first').length;
+	return self.lifeBar.find('.infoPanel-lifeItem:first').length;
 };
 
 InfoPanel.prototype.updatePoints = function(level, points) {

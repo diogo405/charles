@@ -1,0 +1,43 @@
+
+%head
+  %link{href: "css/style.css", rel: "stylesheet", type: "text/css"}
+  %link{href: "https://fonts.googleapis.com/css?family=VT323", rel: "stylesheet", type: "text/css"}
+  %script{src: "../bower_components/jquery/dist/jquery.min.js"}
+ 
+%body
+  .blur
+  .game-over-message GAME OVER
+  .level-up
+  .start-message PRESS ANY KEY TO START
+  .chars
+  %span.level L1
+  %span.score 0
+  .life-bar
+  #charles
+    .message
+    .head
+      .hair 
+      .face
+    .right-forearm
+    .right-upperarm
+    .body
+    .left-upperarm
+    .left-forearm
+    .clear
+    .short-right
+    .short-division
+    .short-left
+    .right-leg
+    .left-leg
+    .right-foot
+    .left-foot
+  %audio{id: "background", loop:, preload:} 
+    %source{src: "audio/background.mp3"}
+  %audio{id: "levelUp"}
+    %source{src: "audio/levelUp.wav"}
+  %audio{id: "success"}
+    %source{src: "audio/success.wav"}
+  %audio{id: "error"}
+    %source{src: "audio/error.wav"}
+  %script{src: "js/build/app.js"} 
+ 
