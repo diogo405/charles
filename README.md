@@ -24,7 +24,7 @@ That's it.
 Open the `/app/index.html` file (preferably with Chrome) and start playing.
 
 ### Development
-The game have been developed using JQuery, SASS and HAML. 
+The game has been developed using JQuery, SASS and HAML. 
 
 Feel free to send a pull request (look at the issues first).
 
