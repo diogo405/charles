@@ -9,13 +9,15 @@ function CharEngine() {
 	this.ANIMATION_DURATION_ADJUST = 0.025;
 
 	this.chars = $('.charEngine');
+
+	this.newChar;
 }
 
 CharEngine.prototype.show = function() {
 	
-	var newChar = get();
+	self.newChar = get();
 	
-	self.chars.html(newChar);
+	self.chars.html(self.newChar);
 	self.chars.addClass('charEngine-isWorking');
 	self.chars.on('animationend webkitAnimationEnd', function(e){
 		$(this).removeClass('charEngine-isWorking');			
@@ -27,13 +29,16 @@ CharEngine.prototype.show = function() {
 		*/			
 	}); 
 
-	return newChar;
+	return self.newChar;
 
 	function get() {
 		return self.CHAR_ARRAY[Math.floor(Math.random() * self.CHAR_ARRAY.length)];
 	}
 };
 
+CharEngine.prototype.getCurrentChar = function() {
+	return self.newChar;
+};
 
 CharEngine.prototype.updateSpeed = function() {
 	var $charsMoving = $('.charEngine.charEngine-isWorking');

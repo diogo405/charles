@@ -1,3 +1,5 @@
+var CharEngine = require('./char-engine.js');
+
 var self;
 
 function InfoPanel() {
@@ -11,7 +13,13 @@ function InfoPanel() {
 	this.score = $('.infoPanel-score');
 	this.scorePoints = 0;
 	this.level = $('.infoPanelLevel-text');
+	this.pointsEarned = $('.points');
 	
+	this.POINTS_TOP_INITAL_POSITION = 20;
+	this.POINTS_LEFT_INITAL_POSITION = 60;
+	this.POINTS_TOP_ADJUSTMENT = 5;
+	this.POINTS_LEFT_ADJUSTMENT = 20;
+
 	this.points = { 
 		CHAR: 18, 
 		LEVEL: 664, 
@@ -54,11 +62,37 @@ InfoPanel.prototype.getLife = function() {
 
 InfoPanel.prototype.updatePoints = function(level, points) {
 
-	self.scorePoints = points ? 
-		self.scorePoints + points * level : 
-		self.scorePoints + self.points.CHAR * level;
+	var pointsToAdd = points ? 
+		points * level : 
+		self.points.CHAR * level;
 
+	var currentChar = CharEngine.getCurrentChar();
+	var charPoints = currentChar.charCodeAt(0);
+	pointsToAdd += charPoints;
+	console.log('currentChar', currentChar, 'charPoints', charPoints);
+
+	self.scorePoints += pointsToAdd;
 	self.score.html(self.scorePoints);
+
+	showPoints(pointsToAdd);
+
+	function showPoints(earnedPoints) {
+		self.pointsEarned.html('+'+earnedPoints);
+		var coordinates = getPointsCoordinates();
+		self.pointsEarned.css({top: coordinates.top, left: coordinates.left});
+		self.pointsEarned.addClass('points-isEarned');
+		self.pointsEarned.on('animationend webkitAnimationEnd', function(e){
+			$(this).removeClass('points-isEarned');
+		});
+
+		function getPointsCoordinates() {
+			var topAdjustment = Math.floor(Math.random() * self.POINTS_TOP_ADJUSTMENT);
+			var pointsTop = (self.POINTS_TOP_INITAL_POSITION - topAdjustment) + '%';
+			var leftAdjustment = Math.floor(Math.random() * self.POINTS_LEFT_ADJUSTMENT);
+			var pointsLeft = (self.POINTS_LEFT_INITAL_POSITION - leftAdjustment) + '%';
+			return {top: pointsTop, left: pointsLeft};
+		}
+	}
 };
 
 module.exports = new InfoPanel();

@@ -23,6 +23,7 @@ $(function(){
 		this.gameOverMessage = $('.gameOver-message');
 		this.startMessage = $('.messagePanel-startGameMessage');
 
+
 		self.game.on('keypress', function(e){
 
 			if (!self.started) {
@@ -56,7 +57,7 @@ $(function(){
 		self.correctInRow++;
 		Charles.claim(self.correctInRow, LevelController.level);
 		self.correct++;
-		InfoPanel.updatePoints(LevelController.level);
+		var earnedPoints = InfoPanel.updatePoints(LevelController.level);
 		self.changeLevel();
 		Charles.dance();
 		self.keypressed = null; // TODO: review
@@ -106,5 +107,4 @@ $(function(){
 		});
 		*/
 	};
-
 });

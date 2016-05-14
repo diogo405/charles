@@ -1,4 +1,5 @@
 var InfoPanel = require('./info-panel');
+var Game = require('./app.js');
 
 var self;
 
@@ -91,7 +92,7 @@ Charles.prototype.claim = function(correctInRow, level) {
 	}
 
 	function getText() {
-		return self.MESSAGE_ARRAY[Math.floor(Math.random() * self.MESSAGE_ARRAY.length)];	
+		return self.MESSAGE_ARRAY[Math.floor(Math.random() * self.MESSAGE_ARRAY.length)];
 	}
 };
 

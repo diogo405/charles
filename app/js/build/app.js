@@ -1,4 +1,115 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+$(function(){
+
+	var Audio = require('./audio.js');
+	var InfoPanel = require('./info-panel.js');
+	var CharEngine = require('./char-engine.js');
+	var Charles = require('./charles.js');
+	var LevelController = require('./level-controller.js');
+	 
+	var self;
+
+	function Game() {
+		
+		self = this;
+
+		this.correct = 0;
+		this.correctInRow = 0;
+		this.started = false;
+		this.newChar = null;
+		this.keypressed = null;
+		
+		this.game = $('.gameBackground');
+		this.gameOverBackground = $('.gameOver');
+		this.gameOverMessage = $('.gameOver-message');
+		this.startMessage = $('.messagePanel-startGameMessage');
+
+
+		self.game.on('keypress', function(e){
+
+			if (!self.started) {
+				self.startMessage.hide();
+				self.start();			
+				self.started = true;
+				return;
+			}
+
+			var charCode = e.which || e.keyCode;
+			self.keypressed = String.fromCharCode(charCode);
+			if (self.keypressed && self.newChar && self.keypressed.toUpperCase() == self.newChar.toUpperCase()) {
+				self.success();
+			} else {	
+				self.miss();
+			}			
+		});
+	}
+
+	// -- Starts here ---
+	new Game();
+
+	Game.prototype.start = function() {
+		Audio.background.play();
+		InfoPanel.init();
+		setInterval(function(){ self.newChar = CharEngine.show(); }, 1000);
+	};
+
+	Game.prototype.success = function() {
+		Audio.success.play();
+		self.correctInRow++;
+		Charles.claim(self.correctInRow, LevelController.level);
+		self.correct++;
+		var earnedPoints = InfoPanel.updatePoints(LevelController.level);
+		self.changeLevel();
+		Charles.dance();
+		self.keypressed = null; // TODO: review
+	};
+
+	Game.prototype.miss = function() {
+		self.correctInRow = 0;			
+		Audio.error.play();
+
+		if (InfoPanel.isAlive()) {
+			InfoPanel.updateLife();
+			if (InfoPanel.getLife() === 0) {
+				Charles.removeShirt();				
+			}
+		} else {
+			self.gameOver(); 
+		}
+
+		self.game.addClass('gameBackground-isMiss');
+		setTimeout(function(){ self.game.removeClass('gameBackground-isMiss'); }, 250);
+	};
+
+	Game.prototype.changeLevel = function() {
+
+		if (self.correct === 0 || self.correct % 7 !== 0) {
+			return;
+		}
+
+		Audio.levelUp.play();
+		LevelController.level++;
+		InfoPanel.updateLevel(LevelController.level);
+		LevelController.showLevelUp();
+		InfoPanel.updatePoints(LevelController.level, InfoPanel.points.LEVEL);
+		CharEngine.updateSpeed();
+	};
+
+	Game.prototype.gameOver = function() {
+		self.started = false;
+		self.gameOverBackground.show();
+		self.gameOverMessage.show();
+		Audio.background.currentTime = 0;
+		self.game.off('keypress');
+
+		/*
+		$('.game-over .blur, .game-over .game-over-message').on('click', function() {
+			// TODO
+		});
+		*/
+	};
+});
+},{"./audio.js":2,"./char-engine.js":3,"./charles.js":4,"./info-panel.js":6,"./level-controller.js":7}],2:[function(require,module,exports){
 var Audio = {
 
 	success: $('audio#success')[0],
@@ -8,7 +119,7 @@ var Audio = {
 };
 
 module.exports = Audio;
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var self;
 
 function CharEngine() {
@@ -20,13 +131,15 @@ function CharEngine() {
 	this.ANIMATION_DURATION_ADJUST = 0.025;
 
 	this.chars = $('.charEngine');
+
+	this.newChar;
 }
 
 CharEngine.prototype.show = function() {
 	
-	var newChar = get();
+	self.newChar = get();
 	
-	self.chars.html(newChar);
+	self.chars.html(self.newChar);
 	self.chars.addClass('charEngine-isWorking');
 	self.chars.on('animationend webkitAnimationEnd', function(e){
 		$(this).removeClass('charEngine-isWorking');			
@@ -38,13 +151,16 @@ CharEngine.prototype.show = function() {
 		*/			
 	}); 
 
-	return newChar;
+	return self.newChar;
 
 	function get() {
 		return self.CHAR_ARRAY[Math.floor(Math.random() * self.CHAR_ARRAY.length)];
 	}
 };
 
+CharEngine.prototype.getCurrentChar = function() {
+	return self.newChar;
+};
 
 CharEngine.prototype.updateSpeed = function() {
 	var $charsMoving = $('.charEngine.charEngine-isWorking');
@@ -59,8 +175,9 @@ CharEngine.prototype.updateSpeed = function() {
 
 module.exports = new CharEngine();
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var InfoPanel = require('./info-panel');
+var Game = require('./app.js');
 
 var self;
 
@@ -69,7 +186,7 @@ function Charles() {
 	self = this;
 
 	this.MESSAGE_ARRAY = ['Awesome!', 'Cooool', 'Very good :>', 'Let\'s dance!', 'Nice', 'Wow', ':)))', 'Follow me!', 'Like Jackson!'];
-	this.NUMBER_OF_DANCES = 4;
+	this.NUMBER_OF_DANCES = 5;
 	this.CORRECT_IN_ROW_FIRST = 3;
 	this.CORRECT_IN_ROW_SECOND = 8;
 	this.HAIR_HEIGHT_ADJUSTMENT = 3;
@@ -153,7 +270,7 @@ Charles.prototype.claim = function(correctInRow, level) {
 	}
 
 	function getText() {
-		return self.MESSAGE_ARRAY[Math.floor(Math.random() * self.MESSAGE_ARRAY.length)];	
+		return self.MESSAGE_ARRAY[Math.floor(Math.random() * self.MESSAGE_ARRAY.length)];
 	}
 };
 
@@ -162,118 +279,11 @@ Charles.prototype.removeShirt = function() {
 };
 
 module.exports = new Charles();
-},{"./info-panel":5}],4:[function(require,module,exports){
-$(function(){
+},{"./app.js":1,"./info-panel":6}],5:[function(require,module,exports){
+module.exports=require(1)
+},{"./audio.js":2,"./char-engine.js":3,"./charles.js":4,"./info-panel.js":6,"./level-controller.js":7}],6:[function(require,module,exports){
+var CharEngine = require('./char-engine.js');
 
-	var Audio = require('./audio.js');
-	var InfoPanel = require('./info-panel.js');
-	var CharEngine = require('./char-engine.js');
-	var Charles = require('./charles.js');
-	var LevelController = require('./level-controller.js');
-	 
-	var self;
-
-	function Game() {
-		
-		self = this;
-
-		this.correct = 0;
-		this.correctInRow = 0;
-		this.started = false;
-		this.newChar = null;
-		this.keypressed = null;
-		
-		this.game = $('.gameBackground');
-		this.gameOverBackground = $('.gameOver');
-		this.gameOverMessage = $('.gameOver-message');
-		this.startMessage = $('.messagePanel-startGameMessage');
-
-		self.game.on('keypress', function(e){
-
-			if (!self.started) {
-				self.startMessage.hide();
-				self.start();			
-				self.started = true;
-				return;
-			}
-
-			var charCode = e.which || e.keyCode;
-			self.keypressed = String.fromCharCode(charCode);
-			if (self.keypressed && self.newChar && self.keypressed.toUpperCase() == self.newChar.toUpperCase()) {
-				self.success();
-			} else {	
-				self.miss();
-			}			
-		});
-	}
-
-	// -- Starts here ---
-	new Game();
-
-	Game.prototype.start = function() {
-		Audio.background.play();
-		InfoPanel.init();
-		setInterval(function(){ self.newChar = CharEngine.show(); }, 1000);
-	};
-
-	Game.prototype.success = function() {
-		Audio.success.play();
-		self.correctInRow++;
-		Charles.claim(self.correctInRow, LevelController.level);
-		self.correct++;
-		InfoPanel.updatePoints(LevelController.level);
-		self.changeLevel();
-		Charles.dance();
-		self.keypressed = null; // TODO: review
-	};
-
-	Game.prototype.miss = function() {
-		self.correctInRow = 0;			
-		Audio.error.play();
-
-		if (InfoPanel.isAlive()) {
-			InfoPanel.updateLife();
-			if (InfoPanel.getLife() === 0) {
-				Charles.removeShirt();				
-			}
-		} else {
-			self.gameOver(); 
-		}
-
-		self.game.addClass('gameBackground-isMiss');
-		setTimeout(function(){ self.game.removeClass('gameBackground-isMiss'); }, 250);
-	};
-
-	Game.prototype.changeLevel = function() {
-
-		if (self.correct === 0 || self.correct % 7 !== 0) {
-			return;
-		}
-
-		Audio.levelUp.play();
-		LevelController.level++;
-		InfoPanel.updateLevel(LevelController.level);
-		LevelController.showLevelUp();
-		InfoPanel.updatePoints(LevelController.level, InfoPanel.points.LEVEL);
-		CharEngine.updateSpeed();
-	};
-
-	Game.prototype.gameOver = function() {
-		self.started = false;
-		self.gameOverBackground.show();
-		self.gameOverMessage.show();
-		Audio.background.currentTime = 0;
-		self.game.off('keypress');
-
-		/*
-		$('.game-over .blur, .game-over .game-over-message').on('click', function() {
-			// TODO
-		});
-		*/
-	};
-
-});
-},{"./audio.js":1,"./char-engine.js":2,"./charles.js":3,"./info-panel.js":5,"./level-controller.js":6}],5:[function(require,module,exports){
 var self;
 
 function InfoPanel() {
@@ -287,7 +297,13 @@ function InfoPanel() {
 	this.score = $('.infoPanel-score');
 	this.scorePoints = 0;
 	this.level = $('.infoPanelLevel-text');
+	this.pointsEarned = $('.points');
 	
+	this.POINTS_TOP_INITAL_POSITION = 20;
+	this.POINTS_LEFT_INITAL_POSITION = 60;
+	this.POINTS_TOP_ADJUSTMENT = 5;
+	this.POINTS_LEFT_ADJUSTMENT = 20;
+
 	this.points = { 
 		CHAR: 18, 
 		LEVEL: 664, 
@@ -330,15 +346,41 @@ InfoPanel.prototype.getLife = function() {
 
 InfoPanel.prototype.updatePoints = function(level, points) {
 
-	self.scorePoints = points ? 
-		self.scorePoints + points * level : 
-		self.scorePoints + self.points.CHAR * level;
+	var pointsToAdd = points ? 
+		points * level : 
+		self.points.CHAR * level;
 
+	var currentChar = CharEngine.getCurrentChar();
+	var charPoints = currentChar.charCodeAt(0);
+	pointsToAdd += charPoints;
+	console.log('currentChar', currentChar, 'charPoints', charPoints);
+
+	self.scorePoints += pointsToAdd;
 	self.score.html(self.scorePoints);
+
+	showPoints(pointsToAdd);
+
+	function showPoints(earnedPoints) {
+		self.pointsEarned.html('+'+earnedPoints);
+		var coordinates = getPointsCoordinates();
+		self.pointsEarned.css({top: coordinates.top, left: coordinates.left});
+		self.pointsEarned.addClass('points-isEarned');
+		self.pointsEarned.on('animationend webkitAnimationEnd', function(e){
+			$(this).removeClass('points-isEarned');
+		});
+
+		function getPointsCoordinates() {
+			var topAdjustment = Math.floor(Math.random() * self.POINTS_TOP_ADJUSTMENT);
+			var pointsTop = (self.POINTS_TOP_INITAL_POSITION - topAdjustment) + '%';
+			var leftAdjustment = Math.floor(Math.random() * self.POINTS_LEFT_ADJUSTMENT);
+			var pointsLeft = (self.POINTS_LEFT_INITAL_POSITION - leftAdjustment) + '%';
+			return {top: pointsTop, left: pointsLeft};
+		}
+	}
 };
 
 module.exports = new InfoPanel();
-},{}],6:[function(require,module,exports){
+},{"./char-engine.js":3}],7:[function(require,module,exports){
 var self;
 
 function LevelController() {
@@ -358,4 +400,4 @@ LevelController.prototype.showLevelUp = function() {
 };
 
 module.exports = new LevelController();
-},{}]},{},[4])
+},{}]},{},[5])

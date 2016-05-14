@@ -31,6 +31,16 @@
   to {
     color: yellow; } }
 
+@keyframes pointUp {
+  0% {
+    opacity: 1;
+    margin-top: 0px; }
+  99% {
+    opacity: 1;
+    margin-top: -60px; }
+  100% {
+    opacity: 0; } }
+
 .charles {
   position: absolute;
   top: 50%;
@@ -173,6 +183,11 @@
   .charles-dance4 .charlesRightLeg, .charles-dance4 .charlesLeftLeg {
     height: 75px; }
 
+.charles-dance5 {
+  left: 50%; }
+  .charles-dance5 .charlesRightLeg, .charles-dance5 .charlesLeftLeg {
+    height: 75px; }
+
 body {
   font-family: 'VT323'; }
 
@@ -260,6 +275,18 @@ body {
 .messagePanel-startGameMessage {
   font-size: 2em;
   animation: blink 1s infinite; }
+
+.points {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 2em;
+  color: #00D900;
+  z-index: 999;
+  opacity: 0; }
+
+.points-isEarned {
+  animation: pointUp .5s ease; }
 
 .charEngine {
   position: absolute;
