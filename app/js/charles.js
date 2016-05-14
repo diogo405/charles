@@ -7,7 +7,7 @@ function Charles() {
 	self = this;
 
 	this.MESSAGE_ARRAY = ['Awesome!', 'Cooool', 'Very good :>', 'Let\'s dance!', 'Nice', 'Wow', ':)))', 'Follow me!', 'Like Jackson!'];
-	this.NUMBER_OF_DANCES = 4;
+	this.NUMBER_OF_DANCES = 5;
 	this.CORRECT_IN_ROW_FIRST = 3;
 	this.CORRECT_IN_ROW_SECOND = 8;
 	this.HAIR_HEIGHT_ADJUSTMENT = 3;
