@@ -41,6 +41,10 @@
   100% {
     opacity: 0; } }
 
+@keyframes continue {
+  50% {
+    opacity: 0; } }
+
 .charles {
   position: absolute;
   top: 50%;
@@ -231,7 +235,7 @@ body {
   .infoPanel-lifeItem:first-child {
     margin-left: 0; }
 
-.gameOver {
+.gameOverBackground {
   position: absolute;
   top: 0;
   left: 0;
@@ -242,7 +246,7 @@ body {
   display: none;
   z-index: 9; }
 
-.gameOver-message {
+.gameOverMessage {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -253,6 +257,12 @@ body {
   text-align: center;
   display: none;
   z-index: 99; }
+
+.gameOverMessage-continue {
+  font-size: 0.2em;
+  letter-spacing: 5px;
+  color: grey;
+  animation: continue .75s infinite; }
 
 .messagePanel {
   position: absolute;
@@ -298,4 +308,15 @@ body {
   opacity: 0; }
 
 .charEngine-isWorking {
-  animation: moveRightLeft 1s ease; }
+  animation: moveRightLeft 1.15s ease; }
+
+.developerInfo {
+  position: absolute;
+  right: 20px;
+  bottom: 15px;
+  color: gray; }
+
+.developerInfo-link {
+  font-size: 1em;
+  color: #039BE5;
+  margin-left: 5px; }

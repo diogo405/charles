@@ -14,8 +14,11 @@
     .infoPanel-score 0
     .infoPanel-life
   
-  .gameOver 
-  .gameOver-message GAME OVER
+  .gameOverBackground 
+  .gameOverMessage 
+    GAME OVER
+    %br
+    %span.gameOverMessage-continue HIT 'C' TO START A NEW GAME
 
   .messagePanel
     .messagePanel-levelUpMessage 
@@ -42,6 +45,8 @@
     .charlesRightFoot
     .charlesLeftFoot
 
+  %footer.developerInfo developed by 
+    %a{class: "developerInfo-link", href: "https://github.com/diogo405/charles", target: "_blank"} diogo goncalves
 
   %audio{id: "background", loop:, preload:} 
     %source{src: "audio/background.mp3"}

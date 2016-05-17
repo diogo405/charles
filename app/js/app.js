@@ -15,12 +15,14 @@ $(function(){
 		this.correct = 0;
 		this.correctInRow = 0;
 		this.started = false;
+		this.isGameOver = false;
 		this.newChar = null;
 		this.keypressed = null;
 		
 		this.game = $('.gameBackground');
-		this.gameOverBackground = $('.gameOver');
-		this.gameOverMessage = $('.gameOver-message');
+		this.gameOverBackground = $('.gameOverBackground');
+		this.gameOverMessage = $('.gameOverMessage');
+		this.continueMessage = $('.gameOverMessage-continue');
 		this.startMessage = $('.messagePanel-startGameMessage');
 
 
@@ -35,6 +37,16 @@ $(function(){
 
 			var charCode = e.which || e.keyCode;
 			self.keypressed = String.fromCharCode(charCode);
+
+			if (self.isGameOver) {
+
+				if (self.keypressed && self.keypressed.toUpperCase() === 'C') {
+					location.reload();
+				}
+				
+				return;
+			}
+
 			if (self.keypressed && self.newChar && self.keypressed.toUpperCase() == self.newChar.toUpperCase()) {
 				self.success();
 			} else {	
@@ -49,7 +61,7 @@ $(function(){
 	Game.prototype.start = function() {
 		Audio.background.play();
 		InfoPanel.init();
-		setInterval(function(){ self.newChar = CharEngine.show(); }, 1000);
+		setInterval(function(){ self.newChar = CharEngine.show(); }, 1150);
 	};
 
 	Game.prototype.success = function() {
@@ -95,16 +107,9 @@ $(function(){
 	};
 
 	Game.prototype.gameOver = function() {
-		self.started = false;
 		self.gameOverBackground.show();
 		self.gameOverMessage.show();
 		Audio.background.currentTime = 0;
-		self.game.off('keypress');
-
-		/*
-		$('.game-over .blur, .game-over .game-over-message').on('click', function() {
-			// TODO
-		});
-		*/
+		self.isGameOver = true;
 	};
 });

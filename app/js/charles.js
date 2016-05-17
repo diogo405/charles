@@ -75,7 +75,7 @@ Charles.prototype.claim = function(correctInRow, level) {
 			$(this).removeClass('charlesMessage-isSaying');
 		});		
 		var currentHairHeight = growHair();
-		if (currentHairHeight == self.TURN_BLACK_HAIR_HEIGHT) {
+		if (currentHairHeight >= self.TURN_BLACK_HAIR_HEIGHT) {
 			turnBlack();
 		}
 	}
