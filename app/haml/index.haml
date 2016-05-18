@@ -1,11 +1,13 @@
 
 %head
 
-  %meta{property: "og:url", content: "http://diogo405.github.io/charles/app"}
+  %meta{property: "fb:app_id", content: "857151717722137"}
+  %meta{property: "fb:admins", content: "100010019312032"}
+  %meta{property: "og:url", content: "http://diogo405.github.io/charles/app/"}
   %meta{property: "og:type", content: "website"}
   %meta{property: "og:title", content: "Charles Dance"}
   %meta{property: "og:description", content: "Help Charles dancing :)"}
-  %meta{property: "og:image", content: "https://raw.githubusercontent.com/diogo405/charles/master/charles.jpg"}
+  %meta{property: "og:image", content: "http://raw.githubusercontent.com/diogo405/charles/master/charles.jpg"}
     
   %link{href: "css/style.css", rel: "stylesheet", type: "text/css"}
   %link{href: "https://fonts.googleapis.com/css?family=VT323", rel: "stylesheet", type: "text/css"}
@@ -16,13 +18,21 @@
   
   #fb-root
   :script
-    (function(d, s, id) { 
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));  
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '857151717722137',
+        xfbml      : true,
+        version    : 'v2.6'
+      });
+    };
+
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "//connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 
   
   .infoPanel
@@ -36,8 +46,8 @@
     GAME OVER
     %br
     %span.gameOverMessage-continue HIT 'C' TO START A NEW GAME
-    %div{class: "fb-like", data-href: "http://diogo405.github.io/charles/app", data-layout: "button", data-action: "like", data-show-faces: "true", data-share: "true"}
-    
+    %div{class: "fb-like", data-href: "http://diogo405.github.io/charles/app/", data-layout: "button", data-action: "like", data-show-faces: "true", data-share: "true"}
+
   .messagePanel
     .messagePanel-levelUpMessage 
     .messagePanel-startGameMessage PRESS ANY KEY TO START
