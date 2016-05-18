@@ -1,24 +1,39 @@
-<head><meta property="og:url" content="http://diogo405.github.io/charles/app" /><meta property="og:type" content="website" /><meta property="og:title" content="Charles Dance" /><meta property="og:description" content="Help Charles dancing :)" /><meta property="og:image" content="http://raw.githubusercontent.com/diogo405/charles/master/charles.jpg" /><link href="css/style.css" rel="stylesheet" type="text/css" /><link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet" type="text/css" /><script src="../bower_components/jquery/dist/jquery.min.js"></script></head><body class="gameBackground"><div id="fb-root"></div>
+<head><meta property="fb:app_id" content="857151717722137" /><meta property="fb:admins" content="100010019312032" /><meta property="og:url" content="http://diogo405.github.io/charles/app/" /><meta property="og:type" content="website" /><meta property="og:title" content="Charles Dance" /><meta property="og:description" content="Help Charles dancing :)" /><meta property="og:image" content="http://raw.githubusercontent.com/diogo405/charles/master/charles.jpg" /><link href="css/style.css" rel="stylesheet" type="text/css" /><link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet" type="text/css" /><script src="../bower_components/jquery/dist/jquery.min.js"></script></head><body class="gameBackground"><div id="fb-root"></div>
 <script type="text/javascript">
 //<![CDATA[
 
-(function(d, s, id) { 
+window.fbAsyncInit = function() {
 
-  var js, fjs = d.getElementsByTagName(s)[0];
+  FB.init({
 
-  if (d.getElementById(id)) return;
+    appId      : '857151717722137',
 
-  js = d.createElement(s); js.id = id;
+    xfbml      : true,
 
-  js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
+    version    : 'v2.6'
 
-  fjs.parentNode.insertBefore(js, fjs);
+  });
 
-}(document, 'script', 'facebook-jssdk'));  
+};
+
+
+(function(d, s, id){
+
+   var js, fjs = d.getElementsByTagName(s)[0];
+
+   if (d.getElementById(id)) {return;}
+
+   js = d.createElement(s); js.id = id;
+
+   js.src = "//connect.facebook.net/en_US/sdk.js";
+
+   fjs.parentNode.insertBefore(js, fjs);
+
+}(document, 'script', 'facebook-jssdk'));
 
 
 
 
 //]]>
 </script>
-<div class="infoPanel"><div class="infoPanelLevel"><span class="infoPanelLevel-text"></span></div><div class="infoPanel-score">0</div><div class="infoPanel-life"></div></div><div class="gameOverBackground"></div><div class="gameOverMessage">GAME OVER<br /><span class="gameOverMessage-continue">HIT 'C' TO START A NEW GAME</span><div class="fb-like" data-href="http://diogo405.github.io/charles/app" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div></div><div class="messagePanel"><div class="messagePanel-levelUpMessage"></div><div class="messagePanel-startGameMessage">PRESS ANY KEY TO START</div></div><div class="points"></div><div class="charEngine"></div><div class="charles"><div class="charlesMessage"></div><div class="charlesHead"><div class="charlesHead-hair"></div><div class="charlesHead-face"></div></div><div class="charlesRightForearm"></div><div class="charlesRightUpperarm"></div><div class="charlesBody"></div><div class="charlesLeftUpperarm"></div><div class="charlesLeftForearm"></div><div class="charlesShort"><div class="charlesShort-division"></div></div><div class="charlesRightLeg"></div><div class="charlesLeftLeg"></div><div class="charlesRightFoot"></div><div class="charlesLeftFoot"></div></div><footer class="developerInfo">developed by<a class="developerInfo-link" href="https://github.com/diogo405/charles" target="_blank">diogo goncalves</a></footer><audio id="background" loop="undefined" preload="undefined"><source src="audio/background.mp3"></source></audio><audio id="levelUp"><source src="audio/levelUp.wav"></source></audio><audio id="success"><source src="audio/success.wav"></source></audio><audio id="error"><source src="audio/error.wav"></source></audio><script src="js/build/app.js"></script></body>
+<div class="infoPanel"><div class="infoPanelLevel"><span class="infoPanelLevel-text"></span></div><div class="infoPanel-score">0</div><div class="infoPanel-life"></div></div><div class="gameOverBackground"></div><div class="gameOverMessage">GAME OVER<br /><span class="gameOverMessage-continue">HIT 'C' TO START A NEW GAME</span><div class="fb-like" data-href="http://diogo405.github.io/charles/app/" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div></div><div class="messagePanel"><div class="messagePanel-levelUpMessage"></div><div class="messagePanel-startGameMessage">PRESS ANY KEY TO START</div></div><div class="points"></div><div class="charEngine"></div><div class="charles"><div class="charlesMessage"></div><div class="charlesHead"><div class="charlesHead-hair"></div><div class="charlesHead-face"></div></div><div class="charlesRightForearm"></div><div class="charlesRightUpperarm"></div><div class="charlesBody"></div><div class="charlesLeftUpperarm"></div><div class="charlesLeftForearm"></div><div class="charlesShort"><div class="charlesShort-division"></div></div><div class="charlesRightLeg"></div><div class="charlesLeftLeg"></div><div class="charlesRightFoot"></div><div class="charlesLeftFoot"></div></div><footer class="developerInfo">developed by<a class="developerInfo-link" href="https://github.com/diogo405/charles" target="_blank">diogo goncalves</a></footer><audio id="background" loop="undefined" preload="undefined"><source src="audio/background.mp3"></source></audio><audio id="levelUp"><source src="audio/levelUp.wav"></source></audio><audio id="success"><source src="audio/success.wav"></source></audio><audio id="error"><source src="audio/error.wav"></source></audio><script src="js/build/app.js"></script></body>
