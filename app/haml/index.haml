@@ -1,12 +1,29 @@
 
 %head
+
+  %meta{property: "og:url", content: "http://diogo405.github.io/charles/app"}
+  %meta{property: "og:type", content: "website"}
+  %meta{property: "og:title", content: "Charles Dance"}
+  %meta{property: "og:description", content: "Help Charles dancing :)"}
+  %meta{property: "og:image", content: "https://raw.githubusercontent.com/diogo405/charles/master/charles.jpg"}
     
   %link{href: "css/style.css", rel: "stylesheet", type: "text/css"}
   %link{href: "https://fonts.googleapis.com/css?family=VT323", rel: "stylesheet", type: "text/css"}
+
   %script{src: "../bower_components/jquery/dist/jquery.min.js"}
- 
 
 %body.gameBackground
+  
+  #fb-root
+  :script
+    (function(d, s, id) { 
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));  
+
   
   .infoPanel
     .infoPanelLevel 
@@ -19,7 +36,8 @@
     GAME OVER
     %br
     %span.gameOverMessage-continue HIT 'C' TO START A NEW GAME
-
+    %div{class: "fb-like", data-href: "http://diogo405.github.io/charles/app", data-layout: "button", data-action: "like", data-show-faces: "true", data-share: "true"}
+    
   .messagePanel
     .messagePanel-levelUpMessage 
     .messagePanel-startGameMessage PRESS ANY KEY TO START
@@ -44,6 +62,7 @@
     .charlesLeftLeg
     .charlesRightFoot
     .charlesLeftFoot
+    
 
   %footer.developerInfo developed by 
     %a{class: "developerInfo-link", href: "https://github.com/diogo405/charles", target: "_blank"} diogo goncalves

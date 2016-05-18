@@ -264,6 +264,10 @@ body {
   color: grey;
   animation: continue .75s infinite; }
 
+.fb_iframe_widget {
+  display: block !important;
+  margin-top: 15px; }
+
 .messagePanel {
   position: absolute;
   top: 45%;
